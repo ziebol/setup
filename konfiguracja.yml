@@ -1,0 +1,57 @@
+--- - hosts: all
+  vars:
+    - os_packages:
+        - git
+  tasks:
+    - name: "Aktualizacja pliku konfiguracyjnego Amazon Web Services"
+      file: dest=~/.aws state=directory
+    - template:
+        src: "tmp/konfiguracja_aws"
+        dest: "~/.aws/config"
+    - name: "Instalacja Git na serwerach"
+      yum: name={{item}}
+      with_items: "{{os_packages}}"
+      become: yes
+    - name: "Synchronizacja repozytorium"
+      git:
+        repo: https://github.com/ziebol/interfejs_uzytkownika.git
+        dest: ~/ui
+        accept_hostkey: true - hosts: interfejs_uzytkownika
+  vars:
+    - python_packages:
+        - Flask
+        - boto3
+  tasks:
+    - name: "Instalacja dodatkowych pakietów Pythona (Flask i boto3)"
+      pip: name={{item}}
+      with_items: "{{python_packages}}"
+      become: yes
+    - name: "Synchronizacja repozytorium"
+      git:
+        repo: https://github.com/ziebol/interfejs_uzytkownika.git
+        dest: ~/ui
+        accept_hostkey: true - hosts: tworzenie_pdf
+  vars:
+    - os_packages:
+        - gcc
+        - libjpeg-devel
+        - zlib-devel
+    - python_packages:
+        - jinja2
+        - xhtml2pdf
+  tasks:
+    - name: "Instalacja podstaowych pakietów (gcc, libjpeg-devel, 
+zlib-devel)"
+      yum: name={{item}}
+      with_items: "{{os_packages}}"
+      become: yes
+    - name: "Instalacja dodatkowych pakietów Pythona (jinja2, 
+xhtml2pdf)"
+      pip: name={{item}}
+      with_items: "{{python_packages}}"
+      become: yes
+    - name: "Synchronizacja repozytorium"
+      git:
+        repo: https://github.com/ziebol/tworzenie_pdf.git
+        dest: ~/pdf
+        accept_hostkey: true
