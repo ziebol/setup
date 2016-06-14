@@ -1,4 +1,5 @@
---- - hosts: all
+---
+- hosts: all
   vars:
     - os_packages:
         - git
@@ -16,7 +17,9 @@
       git:
         repo: https://github.com/ziebol/interfejs_uzytkownika.git
         dest: ~/ui
-        accept_hostkey: true - hosts: interfejs_uzytkownika
+        accept_hostkey: true
+
+- hosts: interfejs_uzytkownika
   vars:
     - python_packages:
         - Flask
@@ -30,7 +33,9 @@
       git:
         repo: https://github.com/ziebol/interfejs_uzytkownika.git
         dest: ~/ui
-        accept_hostkey: true - hosts: tworzenie_pdf
+        accept_hostkey: true
+
+- hosts: tworzenie_pdf
   vars:
     - os_packages:
         - gcc
